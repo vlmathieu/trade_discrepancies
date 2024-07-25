@@ -1,3 +1,4 @@
+from snakemake.script import snakemake
 from tqdm import tqdm
 import polars as pl
 import comtradeapicall
