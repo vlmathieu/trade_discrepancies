@@ -1,0 +1,24 @@
+from snakemake.utils import min_version
+
+# set minimum snakemake version
+min_version('8.16.0')
+
+# global workflow dependencies
+conda:
+    "envs/global.yaml"
+
+# get parameters from the config file
+configfile: 
+    'config/config.yaml'
+
+# get environment variable
+envvars:
+    'comtrade_apikey'
+
+# load rules
+include: 'rules/get_uncomtrade.smk'
+
+# target rule
+rule all:
+    input:
+        'resources/raw_data/UN_Comtrade_data.parquet.gzip'

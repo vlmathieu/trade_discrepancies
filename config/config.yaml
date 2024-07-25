@@ -1,0 +1,10 @@
+# Years of trade
+years:
+  start: 1996
+  stop: 2023
+
+# HS code headings --> products to download
+cmdCode: ['4403']
+
+# Trade flows to download --> Imports and Exports
+flowCode: ['M','X']

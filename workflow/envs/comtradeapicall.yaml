@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - defaults
+  - bioconda
+dependencies:
+  - pip:
+    - comtradeapicall ==1.2.1

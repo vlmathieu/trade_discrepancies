@@ -1,0 +1,4 @@
+channel:
+  - conda-forge
+dependencies:
+  - wbgapi =1.0.12
