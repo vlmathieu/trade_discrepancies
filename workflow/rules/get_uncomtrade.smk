@@ -6,5 +6,7 @@ rule get_uncomtrade:
         cmdCode     = config['cmdCode'],
         flowCode    = config['flowCode'],
         apikey      = os.environ['comtrade_apikey']
+    conda:
+        '../envs/comtradeapicall.yaml'
     script:
         '../scripts/get_uncomtrade_data.py'
