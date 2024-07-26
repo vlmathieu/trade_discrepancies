@@ -17,8 +17,10 @@ envvars:
 
 # load rules
 include: 'rules/get_uncomtrade.smk'
+include: 'rules/merge_uncomtrade.smk'
 
 # target rule
 rule all:
     input:
-        expand('resources/raw_data/uncomtrade_{cmd}.parquet.gzip', cmd=config['cmdCode'])
+        'resources/raw_data/uncomtrade_merged.parquet.gzip'
+        # expand('resources/raw_data/uncomtrade_{cmd}.parquet.gzip', cmd=config['cmdCode'])
