@@ -4,7 +4,7 @@ years:
   stop: 2023
 
 # HS code headings --> products to download
-cmdCode: ['4403']
+cmdCode: [4403, 4407]
 
 # Trade flows to download --> Imports and Exports
 flowCode: ['M','X']
