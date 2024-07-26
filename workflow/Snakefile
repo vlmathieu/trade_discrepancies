@@ -7,11 +7,11 @@ min_version('8.16.0')
 conda:
     "envs/global.yaml"
 
-# get parameters from the config file
+# parameters from the config file
 configfile: 
     'config/config.yaml'
 
-# get environment variable
+# environment variable
 envvars:
     'comtrade_apikey'
 
@@ -21,4 +21,4 @@ include: 'rules/get_uncomtrade.smk'
 # target rule
 rule all:
     input:
-        'resources/raw_data/UN_Comtrade_data.parquet.gzip'
+        expand('resources/raw_data/uncomtrade_{cmd}.parquet.gzip', cmd=config['cmdCode'])
