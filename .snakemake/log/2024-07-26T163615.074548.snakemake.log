@@ -1,0 +1,32 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Conda environments: ignored
+Job stats:
+job                 count
+----------------  -------
+all                     1
+merge_uncomtrade        1
+total                   2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Fri Jul 26 16:36:15 2024]
+localrule merge_uncomtrade:
+    input: resources/raw_data/uncomtrade_4401.parquet.gzip, resources/raw_data/uncomtrade_4403.parquet.gzip, resources/raw_data/uncomtrade_4407.parquet.gzip, resources/raw_data/uncomtrade_4408.parquet.gzip, resources/raw_data/uncomtrade_4410.parquet.gzip, resources/raw_data/uncomtrade_4411.parquet.gzip, resources/raw_data/uncomtrade_4412.parquet.gzip, resources/raw_data/uncomtrade_4802.parquet.gzip, resources/raw_data/uncomtrade_4804.parquet.gzip, resources/raw_data/uncomtrade_8703.parquet.gzip
+    output: resources/raw_data/uncomtrade_merged.parquet.gzip
+    jobid: 1
+    reason: Missing output files: resources/raw_data/uncomtrade_merged.parquet.gzip
+    resources: tmpdir=/var/folders/c9/hqnny2d55q989c0tpr5zmgtm0000gn/T
+
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule merge_uncomtrade in file /Users/valentinmathieu/Desktop/wd/trade_discrepancies/workflow/rules/merge_uncomtrade.smk, line 1:
+Job 1  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+resources/raw_data/uncomtrade_merged.parquet.gzip (missing locally, parent dir contents: uncomtrade_4401.parquet.gzip, uncomtrade_8703.parquet.gzip, uncomtrade_4407.parquet.gzip, uncomtrade_4412.parquet.gzip, uncomtrade_4410.parquet.gzip, uncomtrade_4411.parquet.gzip, uncomtrade_4403.parquet.gzip, uncomtrade_4802.parquet.gzip, uncomtrade_4804.parquet.gzip, uncomtrade_4408.parquet.gzip)
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-07-26T163615.074548.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
