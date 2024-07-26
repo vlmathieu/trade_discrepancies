@@ -45,6 +45,13 @@ def get_uncomtrade_annual(apikey, year, cmd, flow):
         
     return data
 
+def chunks(lst, n):
+    '''
+    Yield successive n-sized chunks from lst.
+    '''
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
 def get_uncomtrade(apikey, years, cmdCode, flowCode):
     '''
     Function that downloads UN Comtrade data for a several years, 
@@ -68,14 +75,20 @@ def get_uncomtrade(apikey, years, cmdCode, flowCode):
 
     '''
 
-    data = (
-        pl.from_pandas(
+    data_years_batch = (
+        [pl.from_pandas(
             get_uncomtrade_annual(
                 apikey,
-                ','.join(years),
+                ','.join(years_batch),
                 cmdCode,
                 ','.join(flowCode)
             ))
+        for years_batch in chunks(years, 12)]
+    )
+
+    data = pl.concat(
+        [df for df in data_years_batch if df.shape != (0,0)],
+        how='vertical_relaxed'
     )
 
     return data
