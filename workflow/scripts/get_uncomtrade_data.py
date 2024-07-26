@@ -1,8 +1,6 @@
 from snakemake.script import snakemake
-from tqdm import tqdm
 import polars as pl
 import comtradeapicall
-import time
 
 def get_uncomtrade_annual(apikey, year, cmd, flow):
     '''
@@ -66,27 +64,18 @@ def get_uncomtrade(apikey, years, cmdCode, flowCode):
     Returns
     -------
     data : polars dataframe
-        The UN Comtrade data for a several years, commoditys, and trade flows.
+        The UN Comtrade data for a several years, commodities, and trade flows.
 
     '''
-        
-    data_annual = (
-        [pl.from_pandas(
+
+    data = (
+        pl.from_pandas(
             get_uncomtrade_annual(
                 apikey,
-                year,
-                cmd,
+                ','.join(years),
+                cmdCode,
                 ','.join(flowCode)
             ))
-        for year in tqdm(years)
-        for cmd in cmdCode
-        if time.sleep(0.25) is None
-        ]
-    )
-
-    data = pl.concat(
-        [df for df in data_annual if df.shape != (0,0)],
-        how='vertical_relaxed'
     )
 
     return data
@@ -103,7 +92,7 @@ print("\nDataframe head: \n\n", UN_Comtrade_data.head(5), "\n")
 # Check of years, commodities, and different flows considered
 check_list = [
     sorted(UN_Comtrade_data['period'].unique()) == list(str(year) for year in snakemake.params['years']),
-    sorted(UN_Comtrade_data['cmdCode'].unique()) == sorted(set(snakemake.params['cmdCode'])),
+    sorted(UN_Comtrade_data['cmdCode'].unique()) == [snakemake.params['cmdCode']],
     sorted(UN_Comtrade_data['flowCode'].unique()) == sorted(snakemake.params['flowCode'])
     ]
 
