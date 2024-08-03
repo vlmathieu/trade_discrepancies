@@ -18,9 +18,11 @@ envvars:
 # load rules
 include: 'rules/get_uncomtrade.smk'
 include: 'rules/merge_uncomtrade.smk'
+include: 'rules/plot_outliers.smk'
 
 # target rule
 rule all:
     input:
-        'resources/raw_data/uncomtrade_merged.parquet.gzip'
+        'results/plot/outliers/outliers_4403.png'
+        # 'resources/raw_data/uncomtrade_merged.parquet.gzip'
         # expand('resources/raw_data/uncomtrade_{cmd}.parquet.gzip', cmd=config['cmdCode'])
