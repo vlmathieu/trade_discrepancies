@@ -23,6 +23,6 @@ include: 'rules/plot_outliers.smk'
 # target rule
 rule all:
     input:
-        'results/plot/outliers/outliers_4403.png'
+        # 'results/plot/outliers/outliers_4403.png'
         # 'resources/raw_data/uncomtrade_merged.parquet.gzip'
-        # expand('resources/raw_data/uncomtrade_{cmd}.parquet.gzip', cmd=config['cmdCode'])
+        expand('resources/raw_data/uncomtrade_{cmd}.parquet.gzip', cmd=config['cmdCode'])
