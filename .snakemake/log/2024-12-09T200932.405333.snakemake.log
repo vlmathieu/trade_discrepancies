@@ -1,0 +1,33 @@
+host: MacBook-Pro-de-Valentin.local
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 12
+Rules claiming more threads will be scaled down.
+Conda environments: ignored
+Job stats:
+job               count
+--------------  -------
+all                   1
+get_uncomtrade        1
+total                 2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Dec  9 20:09:32 2024]
+localrule get_uncomtrade:
+    output: resources/raw_data/uncomtrade_4401.parquet.gzip
+    jobid: 1
+    reason: Forced execution
+    wildcards: cmd=4401
+    resources: tmpdir=/var/folders/c9/hqnny2d55q989c0tpr5zmgtm0000gn/T
+
+CreateCondaEnvironmentException:
+Conda must be version 24.7.1 or later, found version 24.5.0. Please update conda to the latest version. Note that you can also install conda into the snakemake environment without modifying your main conda installation.
+Removing output files of failed job get_uncomtrade since they might be corrupted:
+resources/raw_data/uncomtrade_4401.parquet.gzip
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-12-09T200932.405333.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
