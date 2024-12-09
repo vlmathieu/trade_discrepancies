@@ -55,23 +55,23 @@ def chunks(lst, n):
 def get_uncomtrade(apikey, years, cmdCode, flowCode):
     '''
     Function that downloads UN Comtrade data for a several years, 
-    commoditys, and trade flows. Need an API key.
+    commodity, and trade flows. Need an API key.
 
     Parameters
     ----------
-    apikey : sting
+    apikey : string
         The API subscription key to download data.
-    years : list of string
+    years : list of strings
         The year of trade.
-    cmd : list of string
+    cmd : list of strings
         The commodity code.
-    flow : list of string
+    flow : list of strings
         The trade flow to download (import, export, re-import, re-export...).
 
     Returns
     -------
     data : polars dataframe
-        The UN Comtrade data for a several years, commodities, and trade flows.
+        The UN Comtrade data for a several years, commodity, and trade flows.
 
     '''
 
