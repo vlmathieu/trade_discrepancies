@@ -1,6 +1,7 @@
 from snakemake.script import snakemake
 import polars as pl
 import comtradeapicall
+from tqdm import tqdm 
 
 def get_uncomtrade_annual(apikey, year, cmd, flow):
     '''
@@ -48,6 +49,13 @@ def get_uncomtrade_annual(apikey, year, cmd, flow):
 def chunks(lst, n):
     '''
     Yield successive n-sized chunks from lst.
+
+    Parameters
+    ----------
+    lst : list
+        List to divide in chunks.
+    n : integer
+        Size of the chunks.
     '''
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
@@ -55,17 +63,17 @@ def chunks(lst, n):
 def get_uncomtrade(apikey, years, cmdCode, flowCode):
     '''
     Function that downloads UN Comtrade data for a several years, 
-    commodity, and trade flows. Need an API key.
+    commodities, and trade flows. Need an API key.
 
     Parameters
     ----------
     apikey : string
         The API subscription key to download data.
     years : list of strings
-        The year of trade.
-    cmd : list of strings
-        The commodity code.
-    flow : list of strings
+        The years of trade.
+    cmdCode : list of strings
+        The commodity codes.
+    flowCode : list of strings
         The trade flow to download (import, export, re-import, re-export...).
 
     Returns
@@ -80,10 +88,11 @@ def get_uncomtrade(apikey, years, cmdCode, flowCode):
             get_uncomtrade_annual(
                 apikey,
                 ','.join(years_batch),
-                cmdCode,
+                ','.join(cmd_batch),
                 ','.join(flowCode)
             ))
-        for years_batch in chunks(years, 12)]
+        for years_batch in tqdm(chunks(years, 4), total=sum(1 for _ in chunks(years, 4)))
+        for cmd_batch in chunks(cmdCode, 10)]
     )
 
     data = pl.concat(
@@ -101,12 +110,13 @@ UN_Comtrade_data = get_uncomtrade(
 )
 
 print("\nDataframe head: \n\n", UN_Comtrade_data.head(5), "\n")
+print("\nDataframe size (rows, columns): ", UN_Comtrade_data.shape, "\n")
 
 # Check of years, commodities, and different flows considered
 check_list = [
-    sorted(UN_Comtrade_data['period'].unique()) == list(str(year) for year in snakemake.params['years']),
-    sorted(UN_Comtrade_data['cmdCode'].unique()) == [snakemake.params['cmdCode']],
-    sorted(UN_Comtrade_data['flowCode'].unique()) == sorted(snakemake.params['flowCode'])
+    sorted(set(UN_Comtrade_data['period'].unique())) == sorted(set(snakemake.params['years'])),
+    sorted(set(UN_Comtrade_data['cmdCode'].unique())) == sorted(set(snakemake.params['cmdCode'])),
+    sorted(set(UN_Comtrade_data['flowCode'].unique())) == sorted(set(snakemake.params['flowCode']))
     ]
 
 # Save data
