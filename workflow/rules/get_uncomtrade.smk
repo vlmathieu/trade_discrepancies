@@ -1,10 +1,10 @@
 rule get_uncomtrade:
     output:
-        'resources/raw_data/uncomtrade_{cmd}.parquet.gzip'
+        'resources/raw_data/uncomtrade_data.parquet.gzip'
     params:
         years       = list(map(str,range(config['years']['start'], config['years']['stop']))),
-        cmdCode     = "{cmd}",
-        flowCode    = config['flowCode'],
+        cmdCode     = list(str(cmd) for cmd in config['cmdCode']),
+        flowCode    = list(str(flow) for flow in config['flowCode']),
         apikey      = os.environ['comtrade_apikey']
     threads: 1
     conda:
