@@ -92,7 +92,7 @@ def get_uncomtrade(apikey, years, cmdCode, flowCode):
                 ','.join(flowCode)
             ))
         for years_batch in tqdm(chunks(years, 4), total=sum(1 for _ in chunks(years, 4)))
-        for cmd_batch in chunks(cmdCode, 10)]
+        for cmd_batch in chunks(cmdCode, 4)]
     )
 
     data = pl.concat(
@@ -119,7 +119,7 @@ check_list = [
     sorted(set(UN_Comtrade_data['flowCode'].unique())) == sorted(set(snakemake.params['flowCode']))
     ]
 
-# Save data
+# Save data if check list passed
 if all(check_list):
     print('Data have been checked.\n')   
     UN_Comtrade_data.write_parquet(
