@@ -16,6 +16,7 @@ envvars:
     'comtrade_apikey'
 
 # load rules
+include: 'rules/correspondence_FAO_HS.smk'
 include: 'rules/get_uncomtrade.smk'
 include: 'rules/merge_uncomtrade.smk'
 include: 'rules/plot_outliers.smk'
