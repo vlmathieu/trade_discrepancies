@@ -1,10 +1,13 @@
 # Years of trade
 years:
   start: 1996
-  stop: 2023
+  stop: 2024  # process will consider stop year - 1 only
+
+# HS code version --> different classifications according to the year
+HS_version: [1996, 2002, 2007, 2012, 2017, 2022]
 
 # HS code headings --> products to download
 cmdCode: [4401, 4403, 4407, 4408, 4410, 4411, 4412, 4802, 4804, 8703]
 
 # Trade flows to download --> Imports and Exports
-flowCode: ['M','X']
+flowCode: ['M', 'X', 'RM', 'RX']

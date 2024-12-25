@@ -1,9 +1,10 @@
 from snakemake.script import snakemake
 import polars as pl
+import polars.selectors as cs
 import comtradeapicall
 from tqdm import tqdm 
 
-def get_uncomtrade_annual(apikey, year, cmd, flow):
+def get_uncomtrade(apikey, year, cmd, flow):
     '''
     Function that downloads UN Comtrade data for a given year, a given 
     commodity, and a given trade flow. Need an API key.
@@ -26,7 +27,7 @@ def get_uncomtrade_annual(apikey, year, cmd, flow):
 
     '''
     
-    data = comtradeapicall.getFinalData(
+    uncomtrade_data = comtradeapicall.getFinalData(
         apikey,
         typeCode        = 'C',          # typeCode(str) : Product type. Goods (C) or Services (S)
         freqCode        = 'A',          # freqCode(str) : The time interval at which observations occur. Annual (A) or Monthly (M)
@@ -44,7 +45,7 @@ def get_uncomtrade_annual(apikey, year, cmd, flow):
         includeDesc     = True          # includeDesc(bool) : Option to include the description or not
         )
         
-    return data
+    return uncomtrade_data
 
 def chunks(lst, n):
     '''
@@ -60,7 +61,7 @@ def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
-def get_uncomtrade(apikey, years, cmdCode, flowCode):
+def get_uncomtrade_bulk(apikey, years, cmdCode, flowCode):
     '''
     Function that downloads UN Comtrade data for a several years, 
     commodities, and trade flows. Need an API key.
@@ -78,46 +79,166 @@ def get_uncomtrade(apikey, years, cmdCode, flowCode):
 
     Returns
     -------
-    data : polars dataframe
+    uncomtrade_data : polars dataframe
         The UN Comtrade data for a several years, commodity, and trade flows.
 
     '''
 
-    data_years_batch = (
+    uncomtrade_years_batch = (
         [pl.from_pandas(
-            get_uncomtrade_annual(
-                apikey,
-                ','.join(years_batch),
-                ','.join(cmd_batch),
-                ','.join(flowCode)
+            get_uncomtrade(
+                str(apikey),
+                ','.join([str(_) for _ in years_batch]),
+                ','.join([str(_) for _ in cmd_batch]),
+                ','.join([str(_) for _ in flowCode])
             ))
-        for years_batch in tqdm(chunks(years, 4), total=sum(1 for _ in chunks(years, 4)))
-        for cmd_batch in chunks(cmdCode, 4)]
+        for years_batch in chunks(years, 5)
+        for cmd_batch in chunks(cmdCode, 3)]
     )
 
-    data = pl.concat(
-        [df for df in data_years_batch if df.shape != (0,0)],
+    uncomtrade_data = pl.concat(
+        [df for df in uncomtrade_years_batch if df.shape != (0,0)],
         how='vertical_relaxed'
     )
 
-    return data
+    return uncomtrade_data
 
-UN_Comtrade_data = get_uncomtrade(
+def process_param(start, stop, HS_versions, FAO_HS_json):
+    '''
+    Function that process parameters for downloading uncomtrade data for wood 
+    products, namely : years of download and HS codes to download, while taking 
+    care of the evolution of Harmonized System classification through the years.
+
+    Parameters
+    ----------
+    start : integer
+        The first year of the trade period coverage.
+    stop : integer
+        The last year of the trade period coverage. This year is not considered
+        for downloading (data will stop at y_stop-1).
+    HS_versions : list of strings
+        The year of the differents version of the Harmonized System: 1996, 2002,
+        2007, 2012, 2017, 2022...
+    FAO_HS_json : string
+        Path to a json file of the correspondance between FAO and HS codes.
+
+    Returns
+    -------
+    zip(years, codes) : zip iterator of tuples
+        The zip iterator of tuples of years under which the HS version remained
+        unchanged and the corresponding HS codes for wood products.
+
+    '''
+
+    # HS classification versions applied during trade period coverage
+    HS_versions_keep = HS_versions[
+        next(x[0] for x in enumerate(HS_versions) if x[1] > start)-1:
+    ]
+
+    # List of break years based on HS version and trade period coverage
+    break_years = sorted(set(
+        [_ for _ in HS_versions + [start, stop] if _ >= start]
+    ))
+
+    # Years over which HS version is unchanged
+    years = []
+    for i in range(0, len(break_years)-1):
+        years.append(list(range(break_years[i], break_years[i+1])))
+
+    # Codes for wood products under a common HS version for each year chunk
+    FAO_HS_codes = pl.read_json(FAO_HS_json)
+    codes = [cmdCode.to_list()
+        for HS in HS_versions_keep
+        for cmdCode 
+        in FAO_HS_codes.select(cs.contains(str(HS))).unique()]
+    
+    return zip(years, codes)
+
+def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
+    '''
+    Function that downloads UNComtrade data for all wood products over a desired 
+    trade period and for specific trade flows, taking into account the evolution 
+    of the Harmonized System classification.
+
+    Parameters
+    ----------
+    apikey : string
+        The API subscription key to download data.
+    start : integer
+        The first year of the trade period coverage.
+    stop : integer
+        The last year of the trade period coverage. This year is not considered
+        for downloading (data will stop at y_stop-1).
+    HS_versions : list of strings
+        The year of the differents version of the Harmonized System: 1996, 2002,
+        2007, 2012, 2017, 2022...
+    FAO_HS_json : string
+        Path to a json file of the correspondance between FAO and HS codes.
+    flowCode: list of strings
+        The trade flow to download (import, export, re-import, re-export...).
+
+    Returns
+    -------
+    uncomtrade_data : polars dataframe
+        The UN Comtrade data for all wood products over a desired trade period 
+        and for specific trade flows.
+    '''
+
+    years, codes = (
+    map(list, 
+        zip(*[list(_) 
+              for _ in process_param(start, stop, HS_versions, FAO_HS_json)]))
+    )
+
+    uncomtrade_batch = (
+        [get_uncomtrade_bulk(apikey, years, cmdCode, flowCode)
+         for years, cmdCode 
+         in tqdm(process_param(start, 
+                               stop, 
+                               HS_versions, 
+                               FAO_HS_json),
+                               total=len(years))]
+    )
+
+    uncomtrade_data = pl.concat(
+        [df for df in uncomtrade_batch if df.shape != (0,0)],
+        how='vertical_relaxed'
+    )
+
+    # Check of years, commodities, and different flows considered
+    check_list = (
+        sorted(set(uncomtrade_data['period'].unique())) == sorted(set([str(_) for years_ in years for _ in years_])),
+        sorted(set(uncomtrade_data['cmdCode'].unique())) == sorted(set([str(_) for codes_ in codes for _ in codes_])),
+        sorted(set(uncomtrade_data['flowCode'].unique())) == sorted(set([str(_) for _ in flowCode]))
+    )
+
+    print(sorted(set(uncomtrade_data['period'].unique())), '\n')
+    print(sorted(set([str(_) for years_ in years for _ in years_])), '\n')
+
+    print(sorted(set(uncomtrade_data['cmdCode'].unique())), '\n')
+    print(sorted(set([str(_) for codes_ in codes for _ in codes_])), '\n')
+
+    print(sorted(set(uncomtrade_data['flowCode'].unique())), '\n')
+    print(sorted(set([str(_) for _ in flowCode])), '\n')
+
+    return uncomtrade_data, check_list
+
+UN_Comtrade_data, check_list = get_uncomtrade_all(
     snakemake.params['apikey'],
-    snakemake.params['years'],
-    snakemake.params['cmdCode'],
+    snakemake.params['year_start'],
+    snakemake.params['year_stop'],
+    snakemake.params['HS_version'],
+    snakemake.input[0],
     snakemake.params['flowCode']
 )
 
 print("\nDataframe head: \n\n", UN_Comtrade_data.head(5), "\n")
 print("\nDataframe size (rows, columns): ", UN_Comtrade_data.shape, "\n")
 
-# Check of years, commodities, and different flows considered
-check_list = [
-    sorted(set(UN_Comtrade_data['period'].unique())) == sorted(set(snakemake.params['years'])),
-    sorted(set(UN_Comtrade_data['cmdCode'].unique())) == sorted(set(snakemake.params['cmdCode'])),
-    sorted(set(UN_Comtrade_data['flowCode'].unique())) == sorted(set(snakemake.params['flowCode']))
-    ]
+UN_Comtrade_data.write_parquet(
+        snakemake.output[0],
+        compression='gzip'
+        )
 
 # Save data if check list passed
 if all(check_list):
