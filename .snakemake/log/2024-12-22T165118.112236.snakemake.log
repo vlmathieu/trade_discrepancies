@@ -1,0 +1,41 @@
+host: MBP-de-Valentin
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 12
+Rules claiming more threads will be scaled down.
+Conda environments: ignored
+Job stats:
+job               count
+--------------  -------
+all                   1
+get_uncomtrade        1
+total                 2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Sun Dec 22 16:51:18 2024]
+localrule get_uncomtrade:
+    input: resources/raw_data/correspondence_FAO_HS.json
+    output: resources/raw_data/uncomtrade_data.parquet.gzip
+    jobid: 1
+    reason: Missing output files: resources/raw_data/uncomtrade_data.parquet.gzip
+    resources: tmpdir=/var/folders/c9/hqnny2d55q989c0tpr5zmgtm0000gn/T
+
+[Sun Dec 22 16:56:06 2024]
+Finished job 1.
+1 of 2 steps (50%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Sun Dec 22 16:56:06 2024]
+localrule all:
+    input: resources/raw_data/uncomtrade_data.parquet.gzip
+    jobid: 0
+    reason: Input files updated by another job: resources/raw_data/uncomtrade_data.parquet.gzip
+    resources: tmpdir=/var/folders/c9/hqnny2d55q989c0tpr5zmgtm0000gn/T
+
+[Sun Dec 22 16:56:06 2024]
+Finished job 0.
+2 of 2 steps (100%) done
+Complete log: .snakemake/log/2024-12-22T165118.112236.snakemake.log
