@@ -747,37 +747,37 @@ correspondence_classification = [
         'FAO Code': ('113',),
         'HS 1996': (480411, 480419, 480421, 480429, 480431, 480439, 480442, 480449, 480451, 480452, 480459,  # *** - restructuration since the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
                     4805, 4805, 4805, 4805, 4805, 4805, 4805, 4805, 4805,  # *** - restructuration since the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
-                    480610, 480620, 490640,  # *** - restructuration since the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
+                    480610, 480620, 480640,  # *** - restructuration since the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
                     480810, 480820, 480890,  # *** - restructuration since the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
                     4810, 4810, 4810, 4810, 4810,  # *** - restructuration since dimensional criteria have been deleted for heading 48.10.
                     481131, 481139),  # *** - restructuration amendments regarding the size of paper, paperboard, cellulose wadding and webs of cellulose fibres in strips or rolls
         'HS 2002': (480411, 480419, 480421, 480429, 480431, 480439, 480442, 480449, 480451, 480452, 480459, 
                     480511, 480512, 480519, 480524, 480525, 480530, 480591, 480592, 480593,
-                    480610, 480620, 490640,
+                    480610, 480620, 480640,
                     480810, 480820, 480890,
                     481031, 481032, 481039, 481092, 481099,
                     481151, 481159),  # *** - deletion of heading 48.15 because of the low volume of trade -> included in 481151.59
         'HS 2007': (480411, 480419, 480421, 480429, 480431, 480439, 480442, 480449, 480451, 480452, 480459, 
                     480511, 480512, 480519, 480524, 480525, 480530, 480591, 480592, 480593,
-                    480610, 480620, 490640,
+                    480610, 480620, 480640,
                     480810, 480820, 480890,  # subheadings 480820.30 merged into 480840 because low volume of trade in HS 2012
                     481031, 481032, 481039, 481092, 481099,
                     481151, 481159),
         'HS 2012': (480411, 480419, 480421, 480429, 480431, 480439, 480442, 480449, 480451, 480452, 480459, 
                     480511, 480512, 480519, 480524, 480525, 480530, 480591, 480592, 480593,
-                    480610, 480620, 490640,
+                    480610, 480620, 480640,
                     480810, 480840, 480890,
                     481031, 481032, 481039, 481092, 481099,
                     481151, 481159),
         'HS 2017': (480411, 480419, 480421, 480429, 480431, 480439, 480442, 480449, 480451, 480452, 480459, 
                     480511, 480512, 480519, 480524, 480525, 480530, 480591, 480592, 480593, 
-                    480610, 480620, 490640, 
+                    480610, 480620, 480640, 
                     480810, 480840, 480890,
                     481031, 481032, 481039, 481092, 481099,
                     481151, 481159),
         'HS 2022': (480411, 480419, 480421, 480429, 480431, 480439, 480442, 480449, 480451, 480452, 480459, 
                     480511, 480512, 480519, 480524, 480525, 480530, 480591, 480592, 480593, 
-                    480610, 480620, 490640, 
+                    480610, 480620, 480640, 
                     480810, 480840, 480890,
                     481031, 481032, 481039, 481092, 481099,
                     481151, 481159)
@@ -791,12 +791,12 @@ correspondence_classification = [
         'FAO Code': ('114',),
         'HS 1996': (480240,  # *** - 480240 | 480560.70 | 482359 partially restructured into 480240 since the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
                     480441, 480540, 480550, 480630,  # *** - the scope of paper and paperboard of a kind used for writing, printing or other graphic purposes has been expanded
-                    481200, 481310, 481320, 948130),
-        'HS 2002': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320, 948130),
-        'HS 2007': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320, 948130),
-        'HS 2012': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320, 948130),
-        'HS 2017': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320, 948130),
-        'HS 2022': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320, 948130)
+                    481200, 481310, 481320),
+        'HS 2002': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320),
+        'HS 2007': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320),
+        'HS 2012': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320),
+        'HS 2017': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320),
+        'HS 2022': (480240, 480441, 480540, 480550, 480630, 481200, 481310, 481320)
     },
 
     {
