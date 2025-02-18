@@ -1,5 +1,0 @@
-Building DAG of jobs...
-MissingInputException in rule all in file /Users/valentinmathieu/Desktop/wd/trade_discrepancies/workflow/Snakefile, line 23:
-Missing input files for rule all:
-    affected files:
-        results/plot/outliers/outliers_4403.png
