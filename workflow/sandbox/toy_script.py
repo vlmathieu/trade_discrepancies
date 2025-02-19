@@ -41,7 +41,7 @@ years = [y
 
 test = [list(_) for _ in process_param(year_start, year_stop, HS_version, json)]
 
-years, codes = (
+years, _ = (
     map(list, 
         zip(*[list(_) 
               for _ in process_param(year_start, year_stop, HS_version, json)]))
