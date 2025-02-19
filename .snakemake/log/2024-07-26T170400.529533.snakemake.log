@@ -1,6 +1,0 @@
-Building DAG of jobs...
-MissingInputException in rule plot_outliers in file /Users/valentinmathieu/Desktop/wd/trade_discrepancies/workflow/rules/plot_outliers.smk, line 1:
-Missing input files for rule plot_outliers:
-    output: results/plot/outliers/outliers_4403.png
-    affected files:
-        ressources/raw_data/uncomtrade_4403.parquet.gzip
