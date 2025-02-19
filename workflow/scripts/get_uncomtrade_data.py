@@ -49,12 +49,12 @@ def get_uncomtrade(apikey, year, cmd, flow):
 
 def chunks(lst, n):
     '''
-    Yield successive n-sized chunks from lst.
+    Yield successive n-sized chunks from a list.
 
     Parameters
     ----------
     lst : list
-        List to divide in chunks.
+        List to divide into chunks.
     n : integer
         Size of the chunks.
     '''
@@ -115,12 +115,12 @@ def process_param(start, stop, HS_versions, FAO_HS_json):
         The first year of the trade period coverage.
     stop : integer
         The last year of the trade period coverage. This year is not considered
-        for downloading (data will stop at y_stop-1).
+        for downloading (data will stop at stop-1).
     HS_versions : list of strings
         The year of the differents version of the Harmonized System: 1996, 2002,
         2007, 2012, 2017, 2022...
     FAO_HS_json : string
-        Path to a json file of the correspondance between FAO and HS codes.
+        Path to the json file of the correspondance between FAO and HS codes.
 
     Returns
     -------
@@ -130,7 +130,7 @@ def process_param(start, stop, HS_versions, FAO_HS_json):
 
     '''
 
-    # HS classification versions applied during trade period coverage
+    # HS classification versions used during the trading period covered
     HS_versions_keep = HS_versions[
         next(x[0] for x in enumerate(HS_versions) if x[1] > start)-1:
     ]
@@ -168,7 +168,7 @@ def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
         The first year of the trade period coverage.
     stop : integer
         The last year of the trade period coverage. This year is not considered
-        for downloading (data will stop at y_stop-1).
+        for downloading (data will stop at stop-1).
     HS_versions : list of strings
         The year of the differents version of the Harmonized System: 1996, 2002,
         2007, 2012, 2017, 2022...
@@ -212,14 +212,15 @@ def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
         sorted(set(uncomtrade_data['flowCode'].unique())) == sorted(set([str(_) for _ in flowCode]))
     )
 
-    print(sorted(set(uncomtrade_data['period'].unique())), '\n')
-    print(sorted(set([str(_) for years_ in years for _ in years_])), '\n')
+    # Checks for development
+    # print(sorted(set(uncomtrade_data['period'].unique())), '\n')
+    # print(sorted(set([str(_) for years_ in years for _ in years_])), '\n')
 
-    print(sorted(set(uncomtrade_data['cmdCode'].unique())), '\n')
-    print(sorted(set([str(_) for codes_ in codes for _ in codes_])), '\n')
+    # print(sorted(set(uncomtrade_data['cmdCode'].unique())), '\n')
+    # print(sorted(set([str(_) for codes_ in codes for _ in codes_])), '\n')
 
-    print(sorted(set(uncomtrade_data['flowCode'].unique())), '\n')
-    print(sorted(set([str(_) for _ in flowCode])), '\n')
+    # print(sorted(set(uncomtrade_data['flowCode'].unique())), '\n')
+    # print(sorted(set([str(_) for _ in flowCode])), '\n')
 
     return uncomtrade_data, check_list
 
