@@ -74,14 +74,14 @@ wb_series:
     'IS.RRS.GOOD.MT.K6', # Railways, goods transported (million ton-km)
 
     # Investments
-    'BM.KLT.DINV.CD.WD', # Foreign direct investment, net outflows (BoP, current US$)
+    'BM.KLT.DINV.CD.WD',    # Foreign direct investment, net outflows (BoP, current US$)
     'BM.KLT.DINV.WD.GD.ZS', # Foreign direct investment, net outflows (% of GDP)
-    'BX.KLT.DINV.CD.WD', # Foreign direct investment, net inflows (BoP, current US$)
+    'BX.KLT.DINV.CD.WD',    # Foreign direct investment, net inflows (BoP, current US$)
     'BX.KLT.DINV.WD.GD.ZS', # Foreign direct investment, net inflows (% of GDP)
 
     # Unit value index for convertion into constant USD 2015
     'TM.UVI.MRCH.XD.WD', # Import unit value index (2015 = 100)
-    'TX.UVI.MRCH.XD.WD',  # Export unit value index (2015 = 100)
+    'TX.UVI.MRCH.XD.WD', # Export unit value index (2015 = 100)
 
     # World governance indicators
     'CC.EST', # Control of Corruption: Estimate
@@ -91,9 +91,6 @@ wb_series:
     'RQ.EST', # Regulatory Quality: Estimate
     'VA.EST', # Voice and Accountability: Estimate
   ]
-
-# HS code headings --> products to download
-cmdCode: [4401, 4403, 4407, 4408, 4410, 4411, 4412, 4802, 4804, 8703]
 
 # Trade flows to download --> Imports and Exports
 flowCode: ['M', 'X', 'RM', 'RX']
