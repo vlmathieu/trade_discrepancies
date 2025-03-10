@@ -19,9 +19,10 @@ envvars:
 include: 'rules/correspondence_FAO_HS.smk'
 include: 'rules/get_uncomtrade.smk'
 include: 'rules/wb_data.smk'
+include: 'rules/deflate_uncomtrade.smk'
 include: 'rules/plot_outliers.smk'
 
 # target rule
 rule all:
     input:
-        'resources/raw_data/wb_countries_data.csv'
+        'results/processed_data/deflate_uncomtrade_data.parquet.gzip'
