@@ -24,4 +24,4 @@ include: 'rules/plot_outliers.smk'
 # target rule
 rule all:
     input:
-        'resources/raw_data/wb_countries_data.csv.gzip'
+        'resources/raw_data/wb_countries_data.csv'
