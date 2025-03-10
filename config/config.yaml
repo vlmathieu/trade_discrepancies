@@ -6,6 +6,9 @@ years:
 # HS code version --> different classifications according to the year
 HS_version: [1996, 2002, 2007, 2012, 2017, 2022]
 
+# Trade flows to download --> Imports and Exports
+flowCode: ['M', 'X', 'RM', 'RX']
+
 # World Bank series --> data of interest from World Bank
 wb_series:
   [
@@ -91,6 +94,3 @@ wb_series:
     'RQ.EST', # Regulatory Quality: Estimate
     'VA.EST', # Voice and Accountability: Estimate
   ]
-
-# Trade flows to download --> Imports and Exports
-flowCode: ['M', 'X', 'RM', 'RX']
