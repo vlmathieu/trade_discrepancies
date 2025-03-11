@@ -4,7 +4,7 @@ import polars.selectors as cs
 import comtradeapicall
 from tqdm import tqdm 
 
-def get_uncomtrade(apikey, year, cmd, flow):
+def get_uncomtrade(apikey: str, year: str, cmd: str, flow: str):
     '''
     Function that downloads UN Comtrade data for a given year, a given 
     commodity, and a given trade flow. Need an API key.
@@ -47,7 +47,7 @@ def get_uncomtrade(apikey, year, cmd, flow):
         
     return uncomtrade_data
 
-def chunks(lst, n):
+def chunks(lst: list, n: int):
     '''
     Yield successive n-sized chunks from a list.
 
@@ -61,10 +61,10 @@ def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
-def get_uncomtrade_bulk(apikey, years, cmdCode, flowCode):
+def get_uncomtrade_bulk(apikey: str, years: list, cmdCode: list, flowCode: list):
     '''
-    Function that downloads UN Comtrade data for a several years, 
-    commodities, and trade flows. Need an API key.
+    Function that downloads UN Comtrade data for a several years, commodities, 
+    and trade flows. Need an API key.
 
     Parameters
     ----------
@@ -84,6 +84,7 @@ def get_uncomtrade_bulk(apikey, years, cmdCode, flowCode):
 
     '''
 
+    # Download data by batch of 5 years and 3 commodities
     uncomtrade_years_batch = (
         [pl.from_pandas(
             get_uncomtrade(
@@ -96,6 +97,7 @@ def get_uncomtrade_bulk(apikey, years, cmdCode, flowCode):
         for cmd_batch in chunks(cmdCode, 3)]
     )
 
+    # Concatenate all batch
     uncomtrade_data = pl.concat(
         [df for df in uncomtrade_years_batch if df.shape != (0,0)],
         how='vertical_relaxed'
@@ -103,7 +105,7 @@ def get_uncomtrade_bulk(apikey, years, cmdCode, flowCode):
 
     return uncomtrade_data
 
-def process_param(start, stop, HS_versions, FAO_HS_json):
+def process_param(start: int, stop: int, HS_versions: list, FAO_HS_json: str):
     '''
     Function that process parameters for downloading uncomtrade data for wood 
     products, namely : years of download and HS codes to download, while taking 
@@ -154,7 +156,8 @@ def process_param(start, stop, HS_versions, FAO_HS_json):
     
     return zip(years, codes)
 
-def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
+def get_uncomtrade_all(apikey: str, start: int, stop: int, HS_versions: list, 
+                       FAO_HS_json: str, flowCode: list):
     '''
     Function that downloads UNComtrade data for all wood products over a desired 
     trade period and for specific trade flows, taking into account the evolution 
@@ -184,12 +187,14 @@ def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
         and for specific trade flows.
     '''
 
+    # List years and codes for checks and tqdm
     years, codes = (
     map(list, 
         zip(*[list(_) 
               for _ in process_param(start, stop, HS_versions, FAO_HS_json)]))
     )
 
+    # Dowload data by batch of HS version
     uncomtrade_batch = (
         [get_uncomtrade_bulk(apikey, years, cmdCode, flowCode)
          for years, cmdCode 
@@ -200,6 +205,7 @@ def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
                                total=len(years))]
     )
 
+    # Concatenate all batch
     uncomtrade_data = pl.concat(
         [df for df in uncomtrade_batch if df.shape != (0,0)],
         how='vertical_relaxed'
@@ -212,7 +218,7 @@ def get_uncomtrade_all(apikey, start, stop, HS_versions, FAO_HS_json, flowCode):
         sorted(set(uncomtrade_data['flowCode'].unique())) == sorted(set([str(_) for _ in flowCode]))
     )
 
-    # Checks for development
+    # Checks for development (unnecessary)
     # print(sorted(set(uncomtrade_data['period'].unique())), '\n')
     # print(sorted(set([str(_) for years_ in years for _ in years_])), '\n')
 
@@ -235,11 +241,6 @@ UN_Comtrade_data, check_list = get_uncomtrade_all(
 
 print("\nDataframe head: \n\n", UN_Comtrade_data.head(5), "\n")
 print("\nDataframe size (rows, columns): ", UN_Comtrade_data.shape, "\n")
-
-UN_Comtrade_data.write_parquet(
-        snakemake.output[0],
-        compression='gzip'
-        )
 
 # Save data if check list passed
 if all(check_list):
