@@ -1,5 +1,6 @@
 from snakemake.script import snakemake
 import polars as pl
+import polars.selectors as cs
 
 correspondence_classification = [
 
@@ -562,12 +563,12 @@ correspondence_classification = [
         'FAO 1982': ('7',),
         'FAO Product': ('Dissolving wood pulp',),
         'FAO Code': ('084',),
-        'HS 1996': (440200,),  
-        'HS 2002': (440200,),
-        'HS 2007': (440200,),
-        'HS 2012': (440200,),
-        'HS 2017': (440200,),
-        'HS 2022': (440200,)
+        'HS 1996': (470200,),  
+        'HS 2002': (470200,),
+        'HS 2007': (470200,),
+        'HS 2012': (470200,),
+        'HS 2017': (470200,),
+        'HS 2022': (470200,)
     },
 
     # N.B.1: For OTHER PULP, code 4702 is not taken into account because of partial
@@ -1184,7 +1185,7 @@ correspondence_classification = [
 
     # N.B.: For carbon paper and copying paper ready for use, we don't take into account
     # products 481610.30 because of low volume of trade and to keep a clean classification
-    # correspondance between products codes.
+    # correspondence between products codes.
 
     {
         'FAO Product Agg': 'SECONDARY PAPER PRODUCTS',
@@ -1236,7 +1237,7 @@ correspondence_classification = [
 
     # N.B.: For other articles of paper and paperboard ready for use, we don't take into account
     # products 481410.30 because of low volume of trade and to keep a clean classification
-    # correspondance between products codes.
+    # correspondence between products codes.
 
     {
         'FAO Product Agg': 'SECONDARY PAPER PRODUCTS',
@@ -1284,17 +1285,18 @@ correspondence_classification = [
     }
 ]
 
-correspondance_classification_pl = (
+correspondence_classification_pl = (
     pl.DataFrame(correspondence_classification)
         .explode('HS 2022', 'HS 2017', 'HS 2012', 'HS 2007', 'HS 2002', 'HS 1996')
         .explode('FAO Product', 'FAO Code')
         .explode('FAO 1982')
+        .cast({cs.starts_with('HS'): pl.String})
 )
 
 with pl.Config(tbl_cols=-1):
-    print(correspondance_classification_pl)
+    print(correspondence_classification_pl)
 
-# Saving correspondence dataframe
-correspondance_classification_pl.write_json(
+# Saving correspondence classification
+correspondence_classification_pl.write_json(
     snakemake.output[0],
 )
