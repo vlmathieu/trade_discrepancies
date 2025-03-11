@@ -94,3 +94,20 @@ wb_series:
     'RQ.EST', # Regulatory Quality: Estimate
     'VA.EST', # Voice and Accountability: Estimate
   ]
+
+# Parameters for network analysis
+excluded_iso: ['\\d', 'XX', '_X']
+# This excludes the following non-country reporters or partners:
+#    ['Southern African Customs Union (...1999)', 'Other Asia, nes',
+#    'World', 'Areas, nes', 'Oceania, nes', 'Bunkers',
+#    'Special Categories', 'Other Europe, nes', 'Other Africa, nes',
+#    'Rest of America, nes', 'Free Zones', 'Western Asia, nes',
+#    'CACM, nes', 'LAIA, nes', 'Caribbean, nes', 'Northern Africa, nes',
+#    'North America and Central America, nes']
+flow_to_keep: ['M', 'X']
+# This drop re-import and re-export flows
+fao_divisions: ['011', '012']
+# This keeps trade flows of roundwood products (FAO classification of forest
+# products 2022):
+# - Wood fuel (including wood for charcoal) (Division code: 011)
+# - Wood in the rough, other than wood fuel (Division code: 012)
