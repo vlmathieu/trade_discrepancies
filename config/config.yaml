@@ -6,7 +6,7 @@ years:
 # HS code version --> different classifications according to the year
 HS_version: [1996, 2002, 2007, 2012, 2017, 2022]
 
-# Trade flows to download --> Imports and Exports
+# Trade flows to download --> Imports, Exports, Re-imports, Re-exports
 flowCode: ['M', 'X', 'RM', 'RX']
 
 # World Bank series --> data of interest from World Bank
@@ -111,3 +111,17 @@ fao_divisions: ['011', '012']
 # products 2022):
 # - Wood fuel (including wood for charcoal) (Division code: 011)
 # - Wood in the rough, other than wood fuel (Division code: 012)
+col_keep: ['period', 
+           'reporterISO', 
+           'reporterDesc', 
+           'flowCode', 
+           'partnerISO', 
+           'partnerDesc', 
+           'cmdCode', 
+           'cmdDesc', 
+           'netWgt', 
+           'primaryValue', 
+           'primaryValue_deflated', 
+           'FAO Product', 
+           'FAO Code']
+# Columns to keep to lighten dataframe for computation
