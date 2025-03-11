@@ -4,6 +4,6 @@ rule deflate_uncomtrade:
         'resources/raw_data/public/uncomtrade_data.parquet.gzip'
     output:
         'results/processed_data/deflate_uncomtrade_data.parquet.gzip'
-    threads: 2
+    threads: 4
     script:
         '../scripts/deflate_uncomtrade.py'
