@@ -86,9 +86,118 @@ lst2 = ['440110', '440111', '440112', '440121', '440122', '440130', '440131', '4
 list(set(lst2) - set(lst1))
 
 import polars as pl
-wb_data = pl.read_csv('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/resources/raw_data/wb_series_data.csv',
-                      separator=';')
-
+import polars.selectors as cs
+wb_data = (
+    pl.read_csv('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/resources/raw_data/public/wb_series_data.csv',
+                separator=';')
+                .drop(['TM.UVI.MRCH.XD.WD', 'TX.UVI.MRCH.XD.WD'])
+                .with_columns(pl.col('time').str.replace(r'YR', ''))
+)
+wb_data.with_columns(pl.col('time').str.replace(r'YR', '')).drop(['TM.UVI.MRCH.XD.WD', 'TX.UVI.MRCH.XD.WD'])
 wb_data.describe()
+wb_data.describe().row(1, named=True)
+
 wb_data.columns
 sorted([_ for _ in wb_data.columns if _ not in {'economy', 'time'}])
+
+comtrade_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/resources/raw_data/uncomtrade_data.parquet.gzip')
+
+wb_countries = pl.read_csv('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/resources/raw_data/wb_countries_data.csv',
+                      separator=';')
+wb_countries.columns
+wb_countries.select('aggregate')
+
+wb_data = pl.read_csv('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/resources/raw_data/wb_series_data.csv',
+                      separator=';').select(['economy', 'time', 'TM.UVI.MRCH.XD.WD', 'TX.UVI.MRCH.XD.WD'])
+
+json = '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/resources/raw_data/correspondence_FAO_HS.json'
+FAO_HS = pl.read_json(json)
+FAO_HS.columns
+FAO_HS.select('FAO Code')
+
+# Explore null values in deflate data, primaryValue_deflated
+deflate_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/global/deflate_uncomtrade_data.parquet.gzip')
+deflate_data.select('primaryValue_deflated').describe()
+2.466928e6/2.1949847e7*100
+
+# Check classification code -> delay for adoption of new classfication
+deflate_data.columns
+deflate_data.select('classificationCode')
+(deflate_data
+ .filter((pl.col('period').cast(pl.Int32) < 2025)
+         & (pl.col('period').cast(pl.Int32) >= 2022))
+ .select('classificationCode')
+ .unique()
+ )
+deflate_data.select('cmdCode')
+
+# Merge comtrade data with FAO_HS
+FAO_HS_str = FAO_HS.select(cs.starts_with("").cast(pl.String)) # string for join
+classifCode = sorted(deflate_data.select('classificationCode').unique().to_series().to_list())
+HS_vers = [code for code in FAO_HS_str.columns if '1996' in code]+[code for code in FAO_HS_str.columns if 'HS' in code]
+[(classCode, HS_vers) for classCode, HS_vers in zip(classifCode,HS_vers)]
+FAO_cat = [_ for _ in FAO_HS_str.columns if 'HS' not in _]
+
+test = (
+    [
+        (deflate_data
+         .filter(pl.col('classificationCode') == classCode)
+         .join(FAO_HS_str.unique(subset=FAO_cat+[HS_vers]),
+               left_on='cmdCode',
+               right_on=HS_vers,
+               how='left')
+         .drop(cs.starts_with('HS'))
+        )
+        for classCode, HS_vers in zip(classifCode,HS_vers)
+    ]
+)
+
+res = pl.concat(
+        [df for df in test if df.shape != (0,0)],
+        how='vertical_relaxed'
+    )
+res.shape
+deflate_data.shape
+
+res.select(['FAO Code Agg', 'FAO 1982', 'FAO Product', 'FAO Code']).describe()
+res.select(['cmdCode', 'FAO Code Agg', 'FAO 1982', 'FAO Product', 'FAO Code'])
+
+res_duplicates = res.filter(pl.struct('period', 'reporterDesc', 'flowDesc', 'partnerDesc', 'cmdCode').is_duplicated())
+res_duplicates.select(['period', 'reporterDesc', 'flowDesc', 'partnerDesc', 'cmdCode', 'FAO Code Agg', 'FAO Code'])
+sorted(res_duplicates.select('FAO Code').to_series().unique().to_list())
+sorted(res_duplicates.select('FAO Product Agg').to_series().unique().to_list())
+sorted(res_duplicates.select('FAO Product').to_series().unique().to_list())
+sorted(res_duplicates.select(pl.col('FAO Code')).to_series().unique().to_list())
+zoom = res_duplicates.filter(pl.col('FAO Code').is_in(['011', '012']))
+zoom.select(['period', 'reporterDesc', 'flowDesc', 'partnerDesc', 'cmdCode', 'FAO Code Agg', 'FAO Code'])
+
+# Check merged data
+deflate_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/global/deflate_uncomtrade_data.parquet.gzip')
+merged_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/global/merged_data.parquet.gzip')
+deflate_data.shape
+merged_data.columns
+merged_data.select(pl.col('FAO Code')).unique()
+merged_data.filter(pl.col('FAO Code').is_in(['011', '012']))
+input_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/input/input_data.parquet.gzip')
+
+input_data.columns
+
+sum_cols = ['netWgt', 'primaryValue', 'primaryValue_deflated']
+with pl.Config(tbl_cols=-1):
+    print(input_data.select(sum_cols).describe())
+
+input_data.select('primaryValue_deflated').describe()
+with pl.Config(tbl_rows=-1):
+    print((
+        input_data
+     .filter(pl.col('primaryValue_deflated').is_null())
+     .select(['period', 'reporterISO', 'reporterDesc', 'flowCode', 'partnerISO', 'partnerDesc', 'netWgt'])
+    ))
+
+with pl.Config(tbl_rows=-1):
+    print(
+        input_data
+        .unique(subset=['reporterISO', 'reporterDesc'])
+        .select(['reporterISO', 'reporterDesc'])
+        .filter(pl.col('reporterISO').str.contains('|'.join(excluded_iso)))
+    )
