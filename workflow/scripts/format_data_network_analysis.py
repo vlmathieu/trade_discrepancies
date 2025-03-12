@@ -1,6 +1,5 @@
 from snakemake.script import snakemake
 import polars as pl
-import polars.selectors as cs
 
 # Load data
 merged_data = pl.read_parquet(snakemake.input[0])
