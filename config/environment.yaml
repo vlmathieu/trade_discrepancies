@@ -15,7 +15,6 @@ dependencies:
   - pandas =2.2.2
   - scipy =1.15.2
   - networkx =3.4.2
-  - itertools =3.13.2
   - tqdm =4.66.4
   - pathlib =1.0.1
   - time =1.8
