@@ -21,8 +21,16 @@ include: 'rules/get_uncomtrade.smk'
 include: 'rules/wb_data.smk'
 include: 'rules/deflate_uncomtrade.smk'
 include: 'rules/plot_outliers.smk'
+include: 'rules/merge_data.smk'
+include: 'rules/format_data_network_analysis.smk'
 
 # target rule
 rule all:
     input:
-        'results/processed_data/deflate_uncomtrade_data.parquet.gzip'
+        'results/processed_data/network_analysis/input/input_data.parquet.gzip'
+        # 'results/processed_data/global/merged_data.parquet.gzip'
+        # 'results/processed_data/global/deflate_uncomtrade_data.parquet.gzip'
+        # 'resources/raw_data/public/uncomtrade_data.parquet.gzip'
+        # 'resources/raw_data/public/wb_series_data.csv',
+        # 'resources/raw_data/public/wb_countries_data.csv'
+        # 'resources/raw_data/inhouse/correspondence_FAO_HS.json'
