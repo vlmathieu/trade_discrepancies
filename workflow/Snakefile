@@ -23,10 +23,13 @@ include: 'rules/deflate_uncomtrade.smk'
 include: 'rules/plot_outliers.smk'
 include: 'rules/merge_data.smk'
 include: 'rules/format_data_network_analysis.smk'
+include: 'rules/network_objects.smk'
 
 # target rule
 rule all:
     input:
+        'results/processed_data/network_analysis/intermediary/edge_lists.pkl',
+        'results/processed_data/network_analysis/intermediary/mirror_flows.csv',
         'results/processed_data/network_analysis/input/input_data.parquet.gzip'
         # 'results/processed_data/global/merged_data.parquet.gzip'
         # 'results/processed_data/global/deflate_uncomtrade_data.parquet.gzip'
