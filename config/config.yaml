@@ -96,7 +96,7 @@ wb_series:
   ]
 
 # Parameters for network analysis
-excluded_iso: ['\\d', 'XX', '_X']
+excluded_iso: ['XX', '_X', '\d']
 # This excludes the following non-country reporters or partners:
 #    ['Southern African Customs Union (...1999)', 'Other Asia, nes',
 #    'World', 'Areas, nes', 'Oceania, nes', 'Bunkers',

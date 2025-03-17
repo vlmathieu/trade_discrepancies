@@ -42,7 +42,6 @@ input_data = (
         # Format column names for homogenity
         .rename(format_col_names(snakemake.params['col_keep']))
         .filter(
-
             # Keep data in specified time range
             pl.col('period') >= str(snakemake.params['year_start']),
             pl.col('period') <= str(snakemake.params['year_stop']-2),
@@ -54,9 +53,9 @@ input_data = (
             pl.col('fao_code').is_in(snakemake.params['fao_divisions']),
 
             # Remove non-country reporters and partners
-            (~pl.col('partner_iso')
-             .str.contains('|'.join(snakemake.params['excluded_iso']))),
             (~pl.col('reporter_iso')
+             .str.contains('|'.join(snakemake.params['excluded_iso']))),
+            (~pl.col('partner_iso')
              .str.contains('|'.join(snakemake.params['excluded_iso']))),
 
             # Delete "auto-" imports or exports (reporter = partner)
@@ -84,7 +83,6 @@ min_weight, min_value = (
 
 input_data = (
     input_data.filter(
-
         # Drop trade flow with net weight (kg) under fifth percentile
         pl.col('net_wgt') > min_weight.item(),
 
