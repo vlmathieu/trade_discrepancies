@@ -116,10 +116,10 @@ col_keep: ['period',
            'reporterDesc', 
            'flowCode', 
            'partnerISO', 
-           'partnerDesc', 
+           'partnerDesc',
+           'FAO Code',
+           'FAO Product',  
            'netWgt', 
            'primaryValue', 
-           'primaryValue_deflated', 
-           'FAO Product', 
-           'FAO Code']
+           'primaryValue_deflated']
 # Columns to keep to lighten dataframe for computation
