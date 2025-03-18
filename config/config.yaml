@@ -123,3 +123,17 @@ col_keep: ['period',
            'primaryValue', 
            'primaryValue_deflated']
 # Columns to keep to lighten dataframe for computation
+omission_list: [None,
+                'China', 
+                'New Zealand', 
+                'USA', 
+                'Germany', 
+                'Sweden', 
+                'Canada', 
+                'Japan', 
+                'France', 
+                'Czechia', 
+                'Finland', 
+                'Russian Federation']
+# Countries to omit when computing metrics
+weight: 'primary_value_deflated'
