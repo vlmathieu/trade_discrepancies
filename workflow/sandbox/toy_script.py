@@ -7,6 +7,7 @@ import networkx as nx
 from scipy.stats import kurtosis
 from scipy.stats import skew
 import pandas as pd
+import itertools
 
 # Parameters
 HS_version = [1996, 2002, 2007, 2012, 2017, 2022]
