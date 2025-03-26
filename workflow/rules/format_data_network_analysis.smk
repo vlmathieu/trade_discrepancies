@@ -11,5 +11,7 @@ rule format_data_network_analysis:
         excluded_iso    = config['excluded_iso'],
         col_keep        = config['col_keep']
     threads: 2
+    conda:
+        '../envs/polars.yaml
     script:
         '../scripts/format_data_network_analysis.py'

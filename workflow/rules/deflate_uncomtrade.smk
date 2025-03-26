@@ -5,5 +5,7 @@ rule deflate_uncomtrade:
     output:
         'results/processed_data/global/deflate_uncomtrade_data.parquet.gzip'
     threads: 4
+    conda:
+        '../envs/polars.yaml
     script:
         '../scripts/deflate_uncomtrade.py'

@@ -7,5 +7,7 @@ rule network_metrics:
         omission_list   = config['omission_list'],
         weight          = config['weight']
     threads: 4
+    conda:
+        '../envs/network_metrics.yaml'
     script: 
         '../scripts/network_metrics.py'

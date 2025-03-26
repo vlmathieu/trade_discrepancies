@@ -10,5 +10,7 @@ rule merge_data:
         wb_series_drop      = ['TM.UVI.MRCH.XD.WD', 'TX.UVI.MRCH.XD.WD'],
         wb_countries_keep   = ['id', 'longitude', 'latitude','capitalCity'],
     threads: 1
+    conda:
+        '../envs/polars.yaml
     script:
         '../scripts/merge_data.py'
