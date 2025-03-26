@@ -226,6 +226,9 @@ def metrics(edge_list_dict: dict,
     # Build result dataframe
     result = pl.DataFrame(itertools.chain.from_iterable(metric_list), schema)
 
+    # Remove potential duplicates
+    result = result.unique()
+    
     return result
 
 # Load dictionary of edge lists
