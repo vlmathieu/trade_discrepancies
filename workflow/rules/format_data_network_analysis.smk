@@ -12,6 +12,6 @@ rule format_data_network_analysis:
         col_keep        = config['col_keep']
     threads: 2
     conda:
-        '../envs/polars.yaml
+        '../envs/polars.yaml'
     script:
         '../scripts/format_data_network_analysis.py'

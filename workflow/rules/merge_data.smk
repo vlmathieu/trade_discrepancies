@@ -11,6 +11,6 @@ rule merge_data:
         wb_countries_keep   = ['id', 'longitude', 'latitude','capitalCity'],
     threads: 1
     conda:
-        '../envs/polars.yaml
+        '../envs/polars.yaml'
     script:
         '../scripts/merge_data.py'
