@@ -1,8 +1,9 @@
 channels:
   - conda-forge
-  - defaults
   - bioconda
+  - r
   - noemicazzaniga
+  - defaults
 dependencies:
   - snakemake-minimal >=8.4.4
   - matplotlib =3.9.1
