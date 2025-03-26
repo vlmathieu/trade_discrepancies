@@ -51,4 +51,3 @@ mirror_flows = pl.read_csv(
 path = '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/intermediary/edge_lists.pkl'
 with open(path, 'rb') as f:
     net_dict = pickle.load(f)
-
