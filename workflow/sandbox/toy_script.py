@@ -51,3 +51,10 @@ mirror_flows = pl.read_csv(
 path = '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/intermediary/edge_lists.pkl'
 with open(path, 'rb') as f:
     net_dict = pickle.load(f)
+
+contributor_profiles = pl.read_csv(
+    '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/contributor_profiles.csv',
+    separator=';'
+)
+
+sorted(contributor_profiles.select('product').unique().to_series().to_list())
