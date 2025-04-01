@@ -8,6 +8,6 @@ rule network_metrics:
         weight          = config['weight']
     threads: 4
     conda:
-        '../envs/network_metrics.yaml'
+        '../envs/network_connectivity.yaml'
     script: 
         '../scripts/network_metrics.py'
