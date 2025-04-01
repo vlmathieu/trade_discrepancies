@@ -20,14 +20,16 @@ include: 'rules/plot_outliers.smk'
 include: 'rules/merge_data.smk'
 include: 'rules/format_data_network_analysis.smk'
 include: 'rules/network_objects.smk'
+include: 'rules/contributor_profiles.smk'
 include: 'rules/network_metrics.smk'
 include: 'rules/plot_network_metrics.smk'
 
 # target rule
 rule all:
     input:
-        'results/processed_data/plot/network_analysis/01_net_size.png'
+        # 'results/processed_data/plot/network_analysis/01_net_size.png'
         # 'results/processed_data/network_analysis/output/network_metrics.csv',
+        'results/processed_data/network_analysis/output/contributor_profiles.csv',
         # 'results/processed_data/network_analysis/intermediary/edge_lists.pkl',
         # 'results/processed_data/network_analysis/intermediary/mirror_flows.csv',
         # 'results/processed_data/network_analysis/input/input_data.parquet.gzip'

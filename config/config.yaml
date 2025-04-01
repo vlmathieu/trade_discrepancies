@@ -1,3 +1,5 @@
+### Global parameters
+
 # Years of trade
 years:
   start: 1996
@@ -8,6 +10,8 @@ HS_version: [1996, 2002, 2007, 2012, 2017, 2022]
 
 # Trade flows to download --> Imports, Exports, Re-imports, Re-exports
 flowCode: ['M', 'X', 'RM', 'RX']
+
+### World bank data parameters
 
 # World Bank series --> data of interest from World Bank
 wb_series:
@@ -95,7 +99,9 @@ wb_series:
     'VA.EST', # Voice and Accountability: Estimate
   ]
 
-# Parameters for network analysis
+### Parameters for network analysis
+
+# ISO code to exclude from analysis
 excluded_iso: ['XX', '_X', '\d']
 # This excludes the following non-country reporters or partners:
 #    ['Southern African Customs Union (...1999)', 'Other Asia, nes',
@@ -104,13 +110,19 @@ excluded_iso: ['XX', '_X', '\d']
 #    'Rest of America, nes', 'Free Zones', 'Western Asia, nes',
 #    'CACM, nes', 'LAIA, nes', 'Caribbean, nes', 'Northern Africa, nes',
 #    'North America and Central America, nes']
+
+# Flow types to keep
 flow_to_keep: ['M', 'X']
 # This drop re-import and re-export flows
+
+# Product to keep (FAO classification)
 fao_divisions: ['011', '012']
 # This keeps trade flows of roundwood products (FAO classification of forest
 # products 2022):
 # - Wood fuel (including wood for charcoal) (Division code: 011)
 # - Wood in the rough, other than wood fuel (Division code: 012)
+
+# Columns to keep for analysis (lighten computation)
 col_keep: ['period', 
            'reporterISO', 
            'reporterDesc', 
@@ -122,7 +134,14 @@ col_keep: ['period',
            'netWgt', 
            'primaryValue', 
            'primaryValue_deflated']
-# Columns to keep to lighten dataframe for computation
+
+# The weight of network edges to choose
+weight: 'primary_value_deflated'
+
+# Threshold to apply for identifying main contributors to trade
+threshold_main_contributors: 0.01
+
+# Countries to omit to compute contribution to trade
 omission_list: [None,
                 'China', 
                 'New Zealand', 
@@ -135,5 +154,19 @@ omission_list: [None,
                 'Czechia', 
                 'Finland', 
                 'Russian Federation']
-# Countries to omit when computing metrics
-weight: 'primary_value_deflated'
+
+# List of r packages for plotting results
+r_packages: ['ggplot2',
+             'ggrepel',
+             'ggpubr',
+             'hrbrthemes',
+             'scales',
+             'patchwork',
+             'poweRlaw',
+             'maps',
+             'geosphere',
+             'CoordinateCleaner',
+             'dplyr',
+             'reshape2',
+             'FAOSTAT',
+             'utils']
