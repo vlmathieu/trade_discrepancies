@@ -50,14 +50,16 @@ def unit_market_concentration(
                 d[key] = 0
     
     # Build weighted degree lists for exporters=out_degree | importers=in_degree
-    degree_weighted_exp = [net.out_degree(x, weight = f'{weight}_exp') 
-                           for x in net.nodes() 
-                           # Consider only non-None edges = > 0 weights
-                           if net.out_degree(x, weight = f'{weight}_exp') > 0]
-    degree_weighted_imp = [net.in_degree(x, weight = f'{weight}_imp') 
-                           for x in net.nodes() 
-                           # Consider only non-None edges = > 0 weights
-                           if net.in_degree(x, weight = f'{weight}_imp') > 0]
+    degree_weighted_exp = [
+        net.out_degree(x, weight = f'{weight}_exp') for x in net.nodes() 
+        # Consider only non-None edges = > 0 weights
+        if net.out_degree(x, weight = f'{weight}_exp') > 0
+    ]
+    degree_weighted_imp = [
+        net.in_degree(x, weight = f'{weight}_imp') for x in net.nodes() 
+        # Consider only non-None edges = > 0 weights
+        if net.in_degree(x, weight = f'{weight}_imp') > 0
+    ]
 
     # Compute total traded value for exports and imports
     traded_value_exp = sum(degree_weighted_exp)
