@@ -86,7 +86,7 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
     countries = list(set(main_sources + main_targets))
     
     # Build contributor profiles as a dictionnary
-    contributors_profile = pl.from_dicts([
+    unit_contributor_profiles = pl.from_dicts([
         {
             "period": year,
             "cmd": product,
@@ -105,7 +105,7 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
         for x in countries
     ])
     
-    return contributors_profile
+    return unit_contributor_profiles
 
 def contributor_profiles(
         edge_list_dict: dict, 
@@ -140,7 +140,7 @@ def contributor_profiles(
 
     Returns
     -------
-    contributor_profiles : polars dataframe
+    contributor_profiles : polars data frame
         Dataframe of the profiles of the main contributors to the trade for each
         year and product considered.
         
@@ -158,7 +158,8 @@ def contributor_profiles(
                 weight = weight
             )
             for unit_edge_list_dict in edge_lists
-        ]
+        ],
+        how = 'vertical_relaxed'
     )
 
     return contributor_profiles
