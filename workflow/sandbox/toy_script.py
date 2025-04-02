@@ -57,4 +57,10 @@ contributor_profiles = pl.read_csv(
     separator=';'
 )
 
-sorted(contributor_profiles.select('product').unique().to_series().to_list())
+market_contribution = pl.read_csv(
+    '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/market_concentration.csv',
+    separator=';'
+)
+
+sorted(market_contribution.select('period').unique().to_series().to_list())
+market_contribution.filter(pl.col('cmd') == 12).sort('period').select('hhi_imp')
