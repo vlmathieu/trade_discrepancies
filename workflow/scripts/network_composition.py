@@ -113,6 +113,9 @@ def network_composition(edge_list_dict: dict) -> pl.dataframe.frame.DataFrame:
         how = 'vertical_relaxed'
     )
 
+    # Sort by cmd and period
+    network_composition = network_composition.sort(['cmd', 'period'])
+
     return network_composition
 
 # Load dictionary of edge lists

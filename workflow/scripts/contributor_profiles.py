@@ -164,6 +164,11 @@ def contributor_profiles(
         how = 'vertical_relaxed'
     )
 
+    # Sort by cmd, period, and country
+    contributor_profiles = contributor_profiles.sort(
+        ['cmd', 'period', 'country']
+    )
+
     return contributor_profiles
 
 # Load dictionary of edge lists

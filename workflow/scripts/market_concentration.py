@@ -134,6 +134,9 @@ def market_concentration(
         how = 'vertical_relaxed'
     )
 
+    # Sort by cmd and year
+    market_concentration = market_concentration.sort(['cmd', 'period'])
+    
     return market_concentration
 
 # Load dictionary of edge lists
