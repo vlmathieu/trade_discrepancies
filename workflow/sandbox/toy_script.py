@@ -57,10 +57,20 @@ contributor_profiles = pl.read_csv(
     separator=';'
 )
 
-market_contribution = pl.read_csv(
+market_concentration = pl.read_csv(
     '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/market_concentration.csv',
     separator=';'
 )
 
-sorted(market_contribution.select('period').unique().to_series().to_list())
-market_contribution.filter(pl.col('cmd') == 12).sort('period').select('hhi_imp')
+sorted(market_concentration.select('period').unique().to_series().to_list())
+market_concentration.filter(pl.col('cmd') == 12).sort('period').select('hhi_imp')
+
+network_composition = pl.read_csv(
+    '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/network_composition.csv',
+    separator=';'
+)
+
+network_connectivity = pl.read_csv(
+    '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/network_connectivity.csv',
+    separator=';'
+)
