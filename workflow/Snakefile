@@ -22,6 +22,9 @@ include: 'rules/format_data_network_analysis.smk'
 include: 'rules/network_objects.smk'
 include: 'rules/contributor_profiles.smk'
 include: 'rules/network_metrics.smk'
+include: 'rules/market_concentration.smk'
+include: 'rules/network_composition.smk'
+include: 'rules/network_connectivity.smk'
 include: 'rules/plot_network_metrics.smk'
 
 # target rule
@@ -29,6 +32,9 @@ rule all:
     input:
         # 'results/processed_data/plot/network_analysis/01_net_size.png'
         # 'results/processed_data/network_analysis/output/network_metrics.csv',
+        'results/processed_data/network_analysis/output/network_connectivity.csv',
+        'results/processed_data/network_analysis/output/network_composition.csv',
+        'results/processed_data/network_analysis/output/market_concentration.csv',
         'results/processed_data/network_analysis/output/contributor_profiles.csv',
         # 'results/processed_data/network_analysis/intermediary/edge_lists.pkl',
         # 'results/processed_data/network_analysis/intermediary/mirror_flows.csv',
