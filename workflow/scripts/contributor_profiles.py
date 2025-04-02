@@ -13,16 +13,15 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
     account for at least a certain percentage of the total export or import 
     value. The percentage is defined by the threshold parameter. Contributor 
     profiles include out- and in-degree, total export and import value (current 
-    and deflated), and net export and import weight. The network relates to the 
-    trade of one year and one product and is directed.
+    and deflated), and net export and import weight. The network refers to the 
+    trade of one year and one product and is directed and weighted.
 
     Parameters
     ----------
     unit_edge_list_dict : dictionnary
-        A dictionnary that associates (i) a tuple (product, year) of the product 
+        A dictionnary that associates (i) a tuple (cmd, period) of the commodity
         code and the year of trade and (ii) the associated edge list describing 
-        the network and on which network statistics, total traded value and 
-        market concentration indexes are calculated.
+        the network and on which contributor profiles are calculated.
     threshold : float
         The minimum percentage of a country's contribution to the total value of
         exports and imports for a country to be considered a major contributor 
@@ -35,15 +34,16 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
     Returns
     -------
     unit_contributor_profiles : polars data frame
-        Dictionary of the profiles of the main contributors to the trade.
+        Dictionary of the profiles of the main contributors to the trade for a
+        given year and traded product.
         
     '''
 
-    # Extract keys and edge list
+    # Extract keys and edge list from dict
     [[keys, edge_list]] = unit_edge_list_dict.items()
 
-    # Extract product code and year
-    product, year = keys
+    # Extract commodity code (=cmd) and year (=period)
+    cmd, period = keys
 
     # Build directed network based on edge_list
     net = nx.from_edgelist(edge_list, create_using=nx.DiGraph)
@@ -54,10 +54,10 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
             if d[key] is None:
                 d[key] = 0
     
-    # List sources (origin of link = exporters)
+    # List sources (origin of edge = exporters)
     sources = [x for x in net.nodes() if net.out_degree(x) >= 1]
 
-    # List targets (destination of link = importers)
+    # List targets (destination of edge = importers)
     targets = [x for x in net.nodes() if net.in_degree(x) >= 1]
     
     # Compute total export and import value
@@ -82,17 +82,19 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
          if net.in_degree(x, weight = f'{weight}_imp') >= threshold * tot_imp]
     )
 
-    # List main contributors to traded value
+    # List main contributors to traded value (exports or imports)
     countries = list(set(main_sources + main_targets))
     
-    # Build contributor profiles as a dictionnary
+    # Build contributor profiles as a polars data frame
     unit_contributor_profiles = pl.from_dicts([
         {
-            "period": year,
-            "cmd": product,
-            "country": x, 
+            "period": period,
+            "cmd": cmd,
+            "country": x,
+            # Number of partners to export / import
             "nb_edge_exp": net.out_degree(x),
             "nb_edge_imp": net.in_degree(x),
+            # Tot value / weight of export from country / import to country
             "primary_value_exp": net.out_degree(x, weight = 'primary_value_exp'),
             "primary_value_imp": net.in_degree(x, weight = 'primary_value_imp'),
             "primary_value_deflated_exp": 
@@ -119,7 +121,7 @@ def contributor_profiles(
     the total export or import value. The percentage is defined by the threshold
     parameter. Contributor profiles include out- and in-degree, total export and
     import value (current and deflated), and net export and import weight. The 
-    network is directed.
+    network is directed and weighted.
 
     Parameters
     ----------
@@ -141,12 +143,12 @@ def contributor_profiles(
     Returns
     -------
     contributor_profiles : polars data frame
-        Dataframe of the profiles of the main contributors to the trade for each
-        year and product considered.
+        A polars data frame of the profiles of the main contributors to the 
+        trade for each year and product considered.
         
     '''
 
-    # Divide global dictionary into list of unit dictionnaries
+    # Divide global dictionary into list of unit edge list dictionnaries
     edge_lists = [{k: v} for (k, v) in edge_list_dict.items()]
 
     # Apply unit_contributor_profiles to every edge list dictionnary
