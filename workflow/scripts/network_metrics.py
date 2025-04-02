@@ -7,13 +7,56 @@ from scipy.stats import kurtosis
 from scipy.stats import skew
 import itertools
 
-def statistics(degree_list: list) -> dict:
+
+def composition_stats(sources: list, targets: list) -> dict:
+    '''
+    Functions that computes network composition descriptive statistics (number 
+    of trading countries, number of pure exporters, number of pure importers,
+    number of countries that are both exporter and importer) based on lists of
+    sources and targets of a directed network. Network relates to trade of one 
+    year and one product. Network must be unweighted.
+
+    Parameters
+    ----------
+    sources : list
+        The list of network nodes that are sources = countries that export.
+    targets : list
+        The list of network nodes that are targets = countries that import.
+
+    Returns
+    -------
+    compo_dict : dictionary
+        Dictionary of network composition descriptive statistics.
+
+    '''
+
+    # Compute list of total number of trading countries
+    tot_nb_nodes = list(set(sources + targets))
+
+    # Compute lists of pure sources = exporters / of pure targets = importers
+    pure_sources = list(set(sources) - set(targets))
+    pure_targets = list(set(targets) - set(sources))
+
+    # Compute list of countries that are both sources and targets = exp & imp
+    mixed_src_tgt = list(set(sources).intersection(targets))
+
+    # Compute network composition descriptive statistics based on src/tgt
+    compo_dict = {
+        'tot_nb_nodes': len(tot_nb_nodes),  # Number of trading countries
+        'nb_pure_exp': len(pure_sources),   # Number of pure exporters
+        'nb_pure_imp': len(pure_targets),   # Number of pure importers
+        'nb_mixed': len(mixed_src_tgt),     # Number of mixed countries
+    }
+
+    return compo_dict
+
+def connectivity_stats(degree_list: list) -> dict:
     '''
     Functions that computes network statistics (number of links = trade flows, 
-    number of nodes = traders, mean degree = average connectivity, and variance 
-    | skeweness | kurtosis of the number of degree = variance | skeweness | 
-    kurtosis of connectivity) based on a network degree list. Network relates to 
-    trade of one year and one product. Network must be unweighted.
+    mean degree = average connectivity, and variance | skeweness | kurtosis of 
+    the number of degree = variance | skeweness | kurtosis of connectivity) 
+    based on a network degree list. Network relates to trade of one year and one 
+    product. Network must be unweighted.
 
     Parameters
     ----------
@@ -31,7 +74,6 @@ def statistics(degree_list: list) -> dict:
     # Compute network statistics based on degree_list
     stats_dict = {
         'trade_flows': sum(degree_list),        # Number of edges
-        'nb_nodes': len(degree_list),           # Number of nodes
         'mean_degree': np.mean(degree_list),    # Average degree
         'var_degree': np.var(degree_list),      # Degrees variance
         'skew_degree': skew(degree_list),       # Degrees skewness
@@ -39,7 +81,7 @@ def statistics(degree_list: list) -> dict:
     }
 
     return stats_dict
-    
+
 def market_concentration(degree_list: list) -> dict:
     '''
     Functions that computes total circulating value and market concentration 
@@ -75,7 +117,7 @@ def market_concentration(degree_list: list) -> dict:
 
 def unit_metrics(unit_edge_list_dict: dict, 
                  to_omit: str = None,
-                 weight: list = 'primary_value_deflated') -> tuple:
+                 weight: str = 'primary_value_deflated') -> tuple:
     '''
     Functions that computes network statistics, total circulating value, and 
     market concentration indexes based on an edge list. Network relates to trade 
@@ -159,7 +201,8 @@ def unit_metrics(unit_edge_list_dict: dict,
         [[product, year] + # Product and year of trade
          [f'{s}orter'] + # Type of network
          [to_omit] + # Omission (if specified)
-         list(statistics(du).values()) + # Unweighted network statistics
+         list(composition_stats(sources, targets).values()) + # Compo. stats.
+         list(connectivity_stats(du).values()) + # Connectivity statistics
          list(market_concentration(dw).values()) # Value and mkt concentration
          for s,du,dw in params]
     )
@@ -167,7 +210,8 @@ def unit_metrics(unit_edge_list_dict: dict,
     # List column names
     schema = (
         ['product', 'period', 'trader_type', 'omission'] + 
-        list(statistics(degree_exp_unweighted)) + 
+        list(composition_stats(sources, targets)) +
+        list(connectivity_stats(degree_exp_unweighted)) + 
         list(market_concentration(degree_exp_weighted))
     )
 
@@ -228,7 +272,7 @@ def metrics(edge_list_dict: dict,
 
     # Remove potential duplicates
     result = result.unique()
-    
+
     return result
 
 # Load dictionary of edge lists
