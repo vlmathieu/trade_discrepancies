@@ -5,7 +5,6 @@ import numpy as np
 import networkx as nx
 from scipy.stats import kurtosis
 from scipy.stats import skew
-import itertools
 
 
 def unit_network_connectivity(
@@ -49,8 +48,7 @@ def unit_network_connectivity(
 
     # Build unweighted degree lists for exp=out_degree | imp=in_degree
     degree_unweighted_exp = [
-        net.out_degree(x) 
-        for x in net.nodes()
+        net.out_degree(x) for x in net.nodes()
         # Consider only non-None edges = > 0 degree
         if net.out_degree(x) >= 1]
     degree_unweighted_imp = [
