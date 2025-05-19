@@ -1,4 +1,4 @@
-rule plot_network_metrics:
+rule plot_network_composition:
     input:
         'results/processed_data/network_analysis/output/network_composition.csv'
     output:
