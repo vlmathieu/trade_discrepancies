@@ -2,7 +2,9 @@ channels:
  - conda-forge
 dependencies:
  - r-base=4.3.3
+ - r-dplyr=1.1.4
  - r-ggplot2=3.5.1
+ - r-ggh4x=0.3.0
  - r-ggrepel=0.9.6
  - r-ggpubr=0.6.0
  - r-hrbrthemes=0.8.7
