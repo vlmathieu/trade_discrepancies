@@ -30,7 +30,8 @@ include: 'rules/plot_network_composition.smk'
 # target rule
 rule all:
     input:
-        'results/processed_data/network_analysis/plot/network_composition.png',
+        'results/processed_data/network_analysis/plot/011/network_composition.png',
+        'results/processed_data/network_analysis/plot/012/network_composition.png',
         # 'results/processed_data/network_analysis/output/network_metrics.csv',
         'results/processed_data/network_analysis/output/network_connectivity.csv',
         'results/processed_data/network_analysis/output/network_composition.csv',
