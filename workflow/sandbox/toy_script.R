@@ -24,6 +24,7 @@ library("ggplot2")
 library("dplyr")
 library("hrbrthemes")
 library("reshape2")
+library("ggrepel")
 
 library("ggh4x")
 library("ggrepel")
@@ -37,118 +38,69 @@ library("showtext")
 library("ggtext")
 
 data <- read.csv(
-  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/market_concentration.csv", # nolint
+  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/contributor_profiles.csv", # nolint
   header = TRUE,
   sep = ";")
 head(data)
-data[data$period == 2022 & data$cmd == 12, ]
-select(filter(data, period == 2022, cmd == 12), traded_value_exp)
+to_match <- paste0("primary_value", c("_imp", "_exp"))
+size_col <- colnames(data)[grep(paste(to_match, collapse = "|"), colnames(data))]
 
 pal <- c("#3D85F7", "#C32E5A")
-order <- c("hhi_imp", "hhi_exp")
+columns <- c("country",
+             "nb_edge_imp",
+             "nb_edge_exp",
+             "primary_value_imp",
+             "primary_value_exp")
 
-plot_mkt <- data %>%
-  filter(cmd == 12) %>%
-  select(c("period", "hhi_imp", "hhi_exp")) %>%
-  melt(id.vars = "period",
-       variable.name = "trader_type",
-       value.name = "hhi") %>%
-  arrange(period) %>%
-  mutate(trader_type = factor(trader_type, levels = order)) %>%
-  ggplot(aes(x = period,
-             y = hhi,
-             color = trader_type,
-             label = trader_type)) +
-  geom_line() +
+plot_profile <- data %>%
+  filter(cmd == 12, period == 2001) %>%
+  select(all_of(columns)) %>%
+  mutate(across(all_of(size_col), ~ .x / 1000000)) %>%
+  arrange(desc(size_col[grep("_imp", size_col)])) %>%
+  setNames(gsub("primary_value", "size", names(.))) %>%
+  mutate(country = factor(country)) %>%
 
-  # End of chart labels
-  annotate("text", 
-           x = max(data$period) + 0.4,
-           y = data[data$period == max(data$period) &
-                      data$cmd == prod, ]$hhi_imp,
-           label = "Imports",
-           hjust = 0,
-           size = 3,
-           lineheight = .8,
-           fontface = "bold",
-           color = pal[1]) +
+  ggplot(aes(x = nb_edge_exp,
+             y = nb_edge_imp,
+             label = country)) +
 
-  annotate("text",
-           x = max(data$period) + 0.4,
-           y = data[data$period == max(data$period) &
-                      data$cmd == prod, ]$hhi_exp,
-           label = "Exports",
-           hjust = 0,
-           size = 3,
-           lineheight = .8,
-           fontface = "bold",
-           color = pal[2]) +
-
-  # Segments
-  geom_segment(aes(x = min(data$period),
-                   y = 0.25,
-                   xend = max(data$period),
-                   yend = 0.25),
-               color = "black",
+  geom_segment(aes(x = 0,
+                   y = 0,
+                   xend = ceiling(max(data$nb_edge_exp) / 10) * 10,
+                   yend = ceiling(max(data$nb_edge_imp) / 10) * 10),
+               color = "grey",
                linetype = "dotted") +
-  annotate("text",
-           x = max(data$period) + 0.4,
-           y = 0.25,
-           label = "HHI = 0.25",
-           hjust = 0,
-           size = 3,
-           lineheight = .8,
-           fontface = "bold",
-           color = "black") +
 
-  geom_segment(aes(x = min(data$period),
-                   y = 0.15,
-                   xend = max(data$period),
-                   yend = 0.15),
-               color = "black",
-               linetype = "dotted") +
-  annotate("text",
-           x = max(data$period) + 0.4,
-           y = 0.15,
-           label = "HHI = 0.15",
-           hjust = 0,
-           size = 3,
-           lineheight = .8,
-           fontface = "bold",
-           color = "black") +
+  geom_point(aes(size = size_exp), alpha = 0.6, color = pal[2]) +
+  geom_point(aes(size = size_imp), alpha = 0.6, color = pal[1]) +
 
-  geom_segment(aes(x = min(data$period),
-                   y = 0.01,
-                   xend = max(data$period),
-                   yend = 0.01),
-               color = "black",
-               linetype = "dotted") +
-  annotate("text",
-           x = max(data$period) + 0.4,
-           y = 0.01,
-           label = "HHI = 0.01",
-           hjust = 0,
-           size = 3,
-           lineheight = .8,
-           fontface = "bold",
-           color = "black") +
+  geom_text_repel(size = 2,
+                  min.segment.length = 1.2,
+                  position = position_nudge_repel(x = 3, y = 3),
+                  fontface = "bold") +
+  geom_label(label = 2022, x = 114, y = 4, size = 5) +
 
-  scale_color_manual(values = pal) +
-  scale_x_continuous(
-    breaks = c(1996, 2000, 2005, 2010, 2015, 2020, 2022),
-    labels = c("1996", "2000", "2005", "2010", "2015", "2020", "2022")
-  ) +
-  scale_y_continuous(limits = c(0, 0.5), expand = c(0, 0)) +
-  labs(x = "Year",
-       y = "Herfindahl-Hirschman Index") +
-  coord_cartesian(clip = "off") +
-  theme_ipsum(axis_title_size = 11) +
-  theme(legend.position = "none",
-        plot.margin = margin(40, 80, 20, 20))
+  scale_size(range = c(1, 20),
+             breaks = c(1000, 2000, 5000, 10000),
+             limits = c(0, 20000),
+             name = "Traded value (million US$)") +
+  scale_x_continuous(name = "Number of export partners",
+                     limits = c(0, ceiling(max(data$nb_edge_exp) / 10) * 10),
+                     breaks = seq(0,
+                                  ceiling(max(data$nb_edge_exp) / 10) * 10,
+                                  by = 20),
+                     expand = c(0, 0)) +
+  scale_y_continuous(name = "Number of import partners",
+                     limits = c(0, 120),
+                     breaks = seq(20,
+                                  ceiling(max(data$nb_edge_exp) / 10) * 10,
+                                  by = 20),
+                     expand = c(0, 0)) +
+  theme_ipsum(axis_title_size = 11)
 
 ggsave(
-  "mkt_concentration.png",
-  plot = plot_mkt,
+  "contributor_profiles.png",
+  plot = plot_profile,
   device = "png",
   path = "/Users/valentinmathieu/Desktop/",
   scale = 1,
@@ -159,4 +111,3 @@ ggsave(
   limitsize = TRUE,
   bg = "white"
 )
-
