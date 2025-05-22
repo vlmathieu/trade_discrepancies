@@ -38,7 +38,7 @@ library("showtext")
 library("ggtext")
 
 data <- read.csv(
-  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/contributor_profiles.csv", # nolint
+  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/market_concentration.csv", # nolint
   header = TRUE,
   sep = ";")
 head(data)
@@ -111,3 +111,7 @@ ggsave(
   limitsize = TRUE,
   bg = "white"
 )
+
+prod = 12
+round(max(data[data$cmd == prod, ]$hhi_imp, data[data$cmd == prod, ]$hhi_exp), 1) # nolint
+round(0.52 + 0.05, 1)
