@@ -38,10 +38,11 @@ library("showtext")
 library("ggtext")
 
 data <- read.csv(
-  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/network_connectivity.csv", # nolint
+  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/degree_concentration.csv", # nolint
   header = TRUE,
   sep = ";")
 head(data)
+data$trade_degree_imp
 summary(data)
 
 pal <- c("#3D85F7", "#C32E5A")
