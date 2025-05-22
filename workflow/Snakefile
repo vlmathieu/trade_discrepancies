@@ -28,10 +28,14 @@ include: 'rules/network_connectivity.smk'
 include: 'rules/plot_network_composition.smk'
 include: 'rules/plot_market_concentration.smk'
 include: 'rules/plot_contributor_profiles.smk'
+include: 'rules/plot_network_connectivity.smk'
 
 # target rule
 rule all:
     input:
+        expand('results/processed_data/network_analysis/plot/{fao_div}/network_connectivity.{ext}',
+               fao_div = config['fao_divisions'],
+               ext = ['png', 'svg']),
         expand('results/processed_data/network_analysis/plot/{fao_div}/contributor_profiles/profiles_{year}.{ext}',
                fao_div = config['fao_divisions'],
                year = list(range(config['years']['start'], 
@@ -44,7 +48,7 @@ rule all:
                fao_div = config['fao_divisions'],
                ext = ['png', 'svg']),
         # 'results/processed_data/network_analysis/output/network_metrics.csv',
-        'results/processed_data/network_analysis/output/network_connectivity.csv',
+        # 'results/processed_data/network_analysis/output/network_connectivity.csv',
         # 'results/processed_data/network_analysis/output/network_composition.csv',
         # 'results/processed_data/network_analysis/output/market_concentration.csv',
         # 'results/processed_data/network_analysis/output/contributor_profiles.csv',
