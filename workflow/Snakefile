@@ -23,6 +23,7 @@ include: 'rules/network_objects.smk'
 include: 'rules/contributor_profiles.smk'
 include: 'rules/network_metrics.smk'
 include: 'rules/market_concentration.smk'
+include: 'rules/degree_concentration.smk'
 include: 'rules/network_composition.smk'
 include: 'rules/network_connectivity.smk'
 include: 'rules/plot_network_composition.smk'
@@ -51,6 +52,7 @@ rule all:
         # 'results/processed_data/network_analysis/output/network_connectivity.csv',
         # 'results/processed_data/network_analysis/output/network_composition.csv',
         # 'results/processed_data/network_analysis/output/market_concentration.csv',
+        'results/processed_data/network_analysis/output/degree_concentration.csv',
         # 'results/processed_data/network_analysis/output/contributor_profiles.csv',
         # 'results/processed_data/network_analysis/intermediary/edge_lists.pkl',
         # 'results/processed_data/network_analysis/intermediary/mirror_flows.csv',
