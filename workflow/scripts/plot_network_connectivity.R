@@ -34,7 +34,7 @@ for (fao_division in snakemake@params$fao_divisions) {
     order <- paste0(metric, c("_imp", "_exp"))
 
     # Define name for y axis
-    if ("mean" %in% metric){
+    if ("mean" %in% metric) {
       axis_name <- "Mean nb. of trading partners"
     } else if ("var" %in% metric) {
       axis_name <- "Variance of the nb. of trading partners"
