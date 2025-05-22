@@ -136,7 +136,7 @@ col_keep: ['period',
            'primaryValue_deflated']
 
 # The weight of network edges to choose
-weight: 'primary_value_deflated'
+weight: 'primary_value'
 
 # Threshold to apply for identifying main contributors to trade
 threshold_main_contributors: 0.01
