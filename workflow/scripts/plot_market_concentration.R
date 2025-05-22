@@ -117,7 +117,11 @@ for (fao_division in snakemake@params$fao_divisions) {
       breaks = c(1996, 2000, 2005, 2010, 2015, 2020, 2022),
       labels = c("1996", "2000", "2005", "2010", "2015", "2020", "2022")
     ) +
-    scale_y_continuous(limits = c(0, 0.5), expand = c(0, 0)) +
+    scale_y_continuous(limits = c(0,
+                                  round(max(data[data$cmd == prod, ]$hhi_imp,
+                                            data[data$cmd == prod, ]$hhi_exp) +
+                                          0.05, 1)),
+                       expand = c(0, 0)) +
     labs(x = "Year",
          y = "Herfindahl-Hirschman Index") +
     coord_cartesian(clip = "off") +
