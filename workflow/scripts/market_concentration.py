@@ -6,7 +6,7 @@ import networkx as nx
 
 def unit_market_concentration(
         unit_edge_list_dict: dict, 
-        weight: str = 'primary_value_deflated') -> pl.dataframe.frame.DataFrame:
+        weight: str = 'primary_value') -> pl.dataframe.frame.DataFrame:
     '''
     Function that returns a polar data frame of total traded value and market 
     concentration indices for exports and imports based on an edge list 
@@ -24,7 +24,7 @@ def unit_market_concentration(
         concentration indices are calculated.
     weight : string
         The weight on which network total traded value and market concentration 
-        indices are calculated. The default value is "primary_value_deflated".
+        indices are calculated. The default value is "primary_value".
 
     Returns
     -------
@@ -92,7 +92,7 @@ def unit_market_concentration(
 
 def market_concentration(
         edge_list_dict: dict, 
-        weight: list = 'primary_value_deflated') -> pl.dataframe.frame.DataFrame:
+        weight: list = 'primary_value') -> pl.dataframe.frame.DataFrame:
     '''
     Function that returns a polar data frame of total traded value and market 
     concentration indices for exports and imports based on a dictionary of edge 
@@ -111,7 +111,7 @@ def market_concentration(
         calculated.
     weight : string
         The weight on which network total traded value and market concentration 
-        indices are calculated. The default value is "primary_value_deflated".
+        indices are calculated. The default value is "primary_value".
 
     Returns
     -------

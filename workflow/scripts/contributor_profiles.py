@@ -5,7 +5,7 @@ import networkx as nx
 
 def unit_contributor_profiles(unit_edge_list_dict: dict,
                               threshold: float,
-                              weight: str = 'primary_value_deflated') -> dict:
+                              weight: str = 'primary_value') -> dict:
     '''
     Function that returns a polar data frame of the profiles of the main 
     contributors to the trade based on an edge list describing a trade network 
@@ -29,7 +29,7 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
     weight : string
         The weight to which the threshold is applied for a country to be 
         considered as a main contributor to trade. The default value is 
-        "primary_value_deflated".
+        "primary_value".
 
     Returns
     -------
@@ -112,7 +112,7 @@ def unit_contributor_profiles(unit_edge_list_dict: dict,
 def contributor_profiles(
         edge_list_dict: dict, 
         threshold: float,
-        weight: str = 'primary_value_deflated') -> pl.dataframe.frame.DataFrame:
+        weight: str = 'primary_value') -> pl.dataframe.frame.DataFrame:
     '''
     Function that returns a polar data frame of the profiles of the main 
     contributors to trade, based on a dictionary of edge lists describing a 
@@ -138,7 +138,7 @@ def contributor_profiles(
     weight : string
         The weight to which the threshold is applied for a country to be 
         considered as a main contributor to trade. The default value is 
-        "primary_value_deflated".
+        "primary_value".
 
     Returns
     -------
