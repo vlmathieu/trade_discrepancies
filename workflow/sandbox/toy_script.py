@@ -74,3 +74,9 @@ network_connectivity = pl.read_csv(
     '/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/network_connectivity.csv',
     separator=';'
 )
+
+list(net_dict.keys())
+dict(net_dict[(12, 2022)])
+edge_lists = [{k: v} for (k, v) in net_dict.items()]
+unit_edge_list_dict = edge_lists[-1]
+type(net_dict)
