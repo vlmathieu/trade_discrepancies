@@ -75,8 +75,17 @@ network_connectivity = pl.read_csv(
     separator=';'
 )
 
+# Draft
+
 list(net_dict.keys())
 dict(net_dict[(12, 2022)])
 edge_lists = [{k: v} for (k, v) in net_dict.items()]
 unit_edge_list_dict = edge_lists[-1]
-type(net_dict)
+[[keys, edge_list]] = unit_edge_list_dict.items()
+type(net_dict[(12, 2022)])
+
+keys = (12, 2022)
+edge_list = net_dict[(12, 2022)]
+cmd, period = keys
+to_omit = "China"
+weight = 'primary_value'
