@@ -61,8 +61,8 @@ input_data = (
             # Delete "auto-" imports or exports (reporter = partner)
             pl.col('reporter_desc') != pl.col('partner_desc'),
 
-            # Remove primaryValue_deflated null values (~8% of the dataset)
-            ~pl.col('primary_value_deflated').is_null()
+            # # Remove primaryValue_deflated null values (~8% of the dataset)
+            # ~pl.col('primary_value_deflated').is_null()
         )
         # Drop potential duplicates
         .unique()
