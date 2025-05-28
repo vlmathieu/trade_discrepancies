@@ -37,13 +37,107 @@ library("ggstream")
 library("showtext")
 library("ggtext")
 
-data <- read.csv(
-  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/degree_concentration.csv", # nolint
+network_contribution <- read.csv(
+  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/network_contribution.csv", # nolint
   header = TRUE,
   sep = ";")
-head(data)
-data$trade_degree_imp
-summary(data)
+contributor_profiles <- read.csv(
+  file = "/Users/valentinmathieu/Desktop/wd/trade_discrepancies/results/processed_data/network_analysis/output/contributor_profiles.csv", # nolint
+  header = TRUE,
+  sep = ";")
+head(network_contribution)
+
+main_contributors <- network_contribution %>%
+  filter(
+    cmd == 12,
+    period %in% (2003:2022),
+    contrib_trade_value_imp > quantile(.$contrib_trade_value_imp,
+                                       probs = 0.95) |
+      contrib_trade_value_exp > quantile(.$contrib_trade_value_imp,
+                                         probs = 0.95)
+  ) %>%
+  select("country") %>%
+  {unique(c(.$country))}
+
+extract <- contributor_profiles %>%
+  filter(
+    cmd == 12,
+    period %in% (2003:2022),
+    country %in% main_contributors
+  )
+
+grouping <- extract %>%
+  mutate(edge_ratio = nb_edge_imp / nb_edge_exp) %>%
+  group_by(country) %>%
+  summarize(mean_edge_ratio = mean(edge_ratio, na.rm = TRUE)) %>%
+  mutate(group = ifelse(mean_edge_ratio < 0.5, "producers",
+                        ifelse(mean_edge_ratio > 2, "consumers",
+                               "intermediates"))) %>%
+  group_by(group)
+group_name <- group_keys(grouping)$group
+grouping <- grouping %>%
+  group_by(group) %>%
+  group_split() %>%
+  setNames(group_name)
+
+country_groups <- list()
+for (group in names(grouping)) {
+  country_groups[[group]] <- grouping[[group]]$country
+}
+country_groups
+
+plot_contribution <- network_contribution %>%
+  filter(cmd == 12,
+         country %in% country_groups[[1]]) %>%
+  mutate(contrib = (contrib_trade_value_exp +
+                      contrib_trade_value_imp) / 2) %>%
+  rowwise() %>%
+  mutate(contrib_min = min(contrib_trade_value_imp,
+                           contrib_trade_value_exp),
+         contrib_max = max(contrib_trade_value_imp,
+                           contrib_trade_value_exp)) %>%
+
+  ggplot(aes(x = period,
+             y = contrib,
+             ymin = contrib_min,
+             ymax = contrib_max,
+             group = country)
+  ) +
+  geom_point(aes(x = period,
+                 y = contrib,
+                 shape = country,
+                 color = country)) +
+  geom_line(aes(x = period,
+                y = contrib,
+                linetype = country,
+                color = country)) +
+  geom_ribbon(aes(x = period,
+                  ymin = contrib_min,
+                  ymax = contrib_max,
+                  fill = country),
+              alpha = 0.5)
+
+plot_contribution %>%
+  filter(country == "Japan") %>%
+  select(period, country, contrib, contrib_min, contrib_max)
+
+network_contribution %>%
+  filter(country == "Japan", cmd == 12) %>%
+  select(period, country, contrib_trade_value_exp, contrib_trade_value_imp)
+
+ggsave(
+  "contribution.png",
+  plot = plot_contribution,
+  device = "png",
+  path = "/Users/valentinmathieu/Desktop/",
+  scale = 1,
+  width = 2480 * 1.5,
+  height = 1240 * 2,
+  units = c("px"),
+  dpi = 300,
+  limitsize = TRUE,
+  bg = "white"
+)
 
 pal <- c("#3D85F7", "#C32E5A")
 
